@@ -1,0 +1,69 @@
+﻿<Window x:Class="NYSSLab2.SuccessWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NYSSLab2"
+        mc:Ignorable="d"
+        Title="Успешное обновление" Height="350" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <Style x:Key="style" TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Width" Value="100"/>
+        </Style>
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="Return" Command="{x:Static ApplicationCommands.Close}"/>
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static ApplicationCommands.Close}" Executed="CommandBinding_Executed"/>
+    </Window.CommandBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <Label Content="Обновление произошло успешно!" HorizontalAlignment="Center" FontSize="16"/>
+            <TextBlock FontSize="16" Margin="0, 0, 0, 2"
+                       Text="{Binding ItemsChanged, StringFormat=Общее количество обновлённых записей: {0}}"/>
+        </StackPanel>
+        <Label Content="Было" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="16"/>
+        <Label Content="Стало" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="16" Grid.Column="1"/>
+        <DataGrid Name="leftGrid" Margin="5, 0, 5, 0" Grid.Row="1" ItemsSource="{Binding OldModels}" IsReadOnly="True" 
+                  AutoGenerateColumns="False" SelectedIndex="{Binding ElementName=rightGrid, Path=SelectedIndex}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
+                <DataGridTextColumn Header="Название" Binding="{Binding Name}" ElementStyle="{StaticResource style}"/>
+                <DataGridTextColumn Header="Описание" Binding="{Binding Description}" ElementStyle="{StaticResource style}"/>
+                <DataGridTextColumn Header="Источник" Binding="{Binding Source}" ElementStyle="{StaticResource style}"/>
+                <DataGridTextColumn Header="Объект воздействия" Binding="{Binding Object}"/>
+                <DataGridCheckBoxColumn Header="Нарушение конфиденциальности" Binding="{Binding ConfidentialityCompromised}"/>
+                <DataGridCheckBoxColumn Header="Нарушение целостности" Binding="{Binding IntegrityCompromised}"/>
+                <DataGridCheckBoxColumn Header="Нарушение доступности" Binding="{Binding AccessCompromised}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DataGrid AutoGenerateColumns="False" x:Name="rightGrid" Margin="5, 0, 5, 0" Grid.Row="1" 
+                  Grid.Column="1" ItemsSource="{Binding NewModels}" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
+                <DataGridTextColumn Header="Название" Binding="{Binding Name}" ElementStyle="{StaticResource style}"/>
+                <DataGridTextColumn Header="Описание" Binding="{Binding Description}" ElementStyle="{StaticResource style}"/>
+                <DataGridTextColumn Header="Источник" Binding="{Binding Source}" ElementStyle="{StaticResource style}"/>
+                <DataGridTextColumn Header="Объект воздействия" Binding="{Binding Object}"/>
+                <DataGridCheckBoxColumn Header="Нарушение конфиденциальности" Binding="{Binding ConfidentialityCompromised}"/>
+                <DataGridCheckBoxColumn Header="Нарушение целостности" Binding="{Binding IntegrityCompromised}"/>
+                <DataGridCheckBoxColumn Header="Нарушение доступности" Binding="{Binding AccessCompromised}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button HorizontalAlignment="Left" Grid.Row="2" Height="25"
+                Width="70" Content="OK" Margin="5, 2, 0, 2" Click="Button_Click"/>
+    </Grid>
+</Window>
