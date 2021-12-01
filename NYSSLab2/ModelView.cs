@@ -185,6 +185,8 @@ public class ModelView : INotifyPropertyChanged, IDisposable
                 _dataSet.Dispose();
             _adapter.Fill(_dataSet);
 
+            _changedData.Clear();
+
             connection.Close();
 
             FillData();
@@ -217,6 +219,8 @@ public class ModelView : INotifyPropertyChanged, IDisposable
 
             var command = new OleDbCommand($"SELECT * INTO [#Sheet] IN '{destination}' [Excel 12.0 Xml;HDR=YES] FROM [{GetSheetName(connection)}]", connection);
             command.ExecuteNonQuery();
+
+            _changedData.Clear();
 
             connection.Close();
         }

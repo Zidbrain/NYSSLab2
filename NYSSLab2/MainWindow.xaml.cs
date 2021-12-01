@@ -87,6 +87,9 @@ public partial class MainWindow : Window
         var dialog = new OpenFileDialog() { Filter = "Файл EXCEL (*.xlsx)|*.xlsx" };
         if (dialog.ShowDialog() ?? false)
         {
+            if (CheckUnsavedChanges())
+                return;
+
             ModelView.SourceFile = dialog.FileName;
             if (!ModelView.TryOpen(out var exception))
                 MessageBox.Show($"Произошла ошибка: {exception.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -95,6 +98,9 @@ public partial class MainWindow : Window
 
     private void OpenFromInterntModel(object sender, ExecutedRoutedEventArgs e)
     {
+        if (CheckUnsavedChanges())
+            return;
+
         if (!ModelView.TryOpenFromInternet(out var exception))
             MessageBox.Show($"Произошла ошибка: {exception.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
     }
@@ -137,7 +143,7 @@ public partial class MainWindow : Window
         Close();
     }
 
-    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    private bool CheckUnsavedChanges()
     {
         if (ModelView.HasUnsavedChanges)
         {
@@ -146,7 +152,14 @@ public partial class MainWindow : Window
             if (result == MessageBoxResult.Yes)
                 UpdateModel(this, null);
             else if (result == MessageBoxResult.Cancel)
-                e.Cancel = true;
+                return true;
         }
+
+        return false;
+    }
+
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+        e.Cancel = CheckUnsavedChanges();
     }
 }
